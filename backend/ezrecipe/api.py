@@ -1,6 +1,6 @@
-from ezrecipe.models import Ingredients, Recipes, RecipeIngredients
+from ezrecipe.models import Ingredients, Recipes, RecipeIngredients, InputIngredients
 from rest_framework import viewsets, permissions
-from .serializers import IngredientsSerializer, RecipesSerializer, RecipeIngredientsSerializer
+from .serializers import IngredientsSerializer, RecipesSerializer, RecipeIngredientsSerializer, IngredientsInputSerializer
 
 #Ingredient Viewset
 class IngredientsViewSet(viewsets.ModelViewSet):
@@ -26,4 +26,11 @@ class RecipeIngredientsViewset(viewsets.ModelViewSet):
         permissions.AllowAny
     ]
     serializer_class = RecipeIngredientsSerializer
+
+class InputIngredientsViewset(viewsets.ModelViewSet):
+    queryset = InputIngredients.objects.all()
+    permissions.classes = [
+        permissions.AllowAny
+    ]
+    serializer_class = IngredientsInputSerializer
     

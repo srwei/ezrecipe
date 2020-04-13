@@ -1,7 +1,7 @@
  # todo/serializers.py
 
 from rest_framework import serializers
-from ezrecipe.models import Ingredients, Recipes, RecipeIngredients
+from ezrecipe.models import Ingredients, Recipes, RecipeIngredients, InputIngredients
 
 #Ingredients Serializer
 class IngredientsSerializer(serializers.ModelSerializer):
@@ -17,6 +17,11 @@ class RecipesSerializer(serializers.ModelSerializer):
 class RecipeIngredientsSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredients
+        fields = '__all__'
+
+class IngredientsInputSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InputIngredients
         fields = '__all__'
 
     

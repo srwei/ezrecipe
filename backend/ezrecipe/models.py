@@ -155,3 +155,7 @@ class Recipes(models.Model):
     class Meta:
         managed = False
         db_table = 'recipes'
+
+class InputIngredients(models.Model):
+    ingredients = models.TextField(primary_key=True)
+
