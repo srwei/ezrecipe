@@ -38,15 +38,18 @@ class IngredientForms extends Component {
 
     submitHandler = e => {
         e.preventDefault()
+
         //console.log(this.state)
         let res = this.state.ingredients_str
         res = res.map(a => a.ingredient)
         //console.log(res)
+        
         var post = { ingredients_str: res }
         console.log(post)
         axios.post('http://localhost:8000/api/inputingredients/', post)
             .then(response => {
                 console.log(response)
+                console.log(response.data)
             })
     }
 

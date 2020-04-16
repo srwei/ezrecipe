@@ -63,11 +63,17 @@ class InputIngredientsViewset(viewsets.ModelViewSet):
                 where s.available_ingredients >= r.num_ingredients
             """.format(ingredient_list)
 
+        content = []
         r = Recipes.objects.raw(query)
         print(r)
         for i in r:
             print(i.recipe_id, i.recipe_name)
             print("www.allrecipes.com/recipe/{}".format(i.recipe_id))
+            recipe = {}
+            recipe["recipe_name"] = i.recipe_name
+            recipe["recipe_url"] = "www.allrecipes.com/recipe/{}".format(i.recipe_id)
+            content.append(recipe)
+
 
         #print(x)
 
@@ -75,4 +81,4 @@ class InputIngredientsViewset(viewsets.ModelViewSet):
         ingredient_list = str(ingredient_list).strip('[]')
         x = 
         '''
-        return Response()
+        return Response(content)
