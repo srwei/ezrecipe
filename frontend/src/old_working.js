@@ -13,7 +13,7 @@ class IngredientForms extends Component {
     changeIngredientHandler = idx => e => {
         const newIngredients = this.state.ingredients_str.map((ingredient, sidx) => {
             if (idx !== sidx) {return ingredient};
-            return { ingredient: e.target.value };
+            return { ...ingredient: e.target.value };
             });
             this.setState({ ingredients_str: newIngredients });
     }
@@ -38,13 +38,8 @@ class IngredientForms extends Component {
 
     submitHandler = e => {
         e.preventDefault()
-        //console.log(this.state)
-        let res = this.state.ingredients_str
-        res = res.map(a => a.ingredient)
-        //console.log(res)
-        var post = { ingredients_str: res }
-        console.log(post)
-        axios.post('http://localhost:8000/api/inputingredients/', post)
+        console.log(this.state)
+        axios.post('http://localhost:8000/api/inputingredients/', this.state)
             .then(response => {
                 console.log(response)
             })

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from "axios"
 
-class Form extends React.Component {
+class IngredientList extends React.Component {
     constructor(props) {
       super(props)
   
@@ -36,3 +36,5 @@ class Form extends React.Component {
       )
     }
   }
+
+export default IngredientList
