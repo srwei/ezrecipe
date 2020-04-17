@@ -4,6 +4,9 @@ from .serializers import IngredientsSerializer, RecipesSerializer, RecipeIngredi
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from bs4 import BeautifulSoup
+import re
+import requests
 
 #Ingredient Viewset
 class IngredientsViewSet(viewsets.ModelViewSet):
@@ -69,10 +72,54 @@ class InputIngredientsViewset(viewsets.ModelViewSet):
         for i in r:
             print(i.recipe_id, i.recipe_name)
             print("www.allrecipes.com/recipe/{}".format(i.recipe_id))
-            recipe = {}
-            recipe["recipe_name"] = i.recipe_name
-            recipe["recipe_url"] = "www.allrecipes.com/recipe/{}".format(i.recipe_id)
-            content.append(recipe)
+            recipes = {}
+            recipes["recipe_name"] = i.recipe_name
+            recipes["recipe_url"] = "http://www.allrecipes.com/recipe/{}".format(i.recipe_id)
+            response = requests.get(recipes["recipe_url"])
+            soup = BeautifulSoup(response.text, "html.parser")
+            x = soup.find_all("img", class_= "rec-photo")
+            if x:
+                picture_url = re.findall(r'src="(.*?)"', str(x))[0]
+                recipes["picture_url"] = picture_url
+            if not x:
+                recipes["picture_url"] = "no picture"
+
+            content.append(recipes)
+
+        #Getting Recipes that are almost available (missing one ingredient)
+        almost_query = """
+                select * from recipes r 
+                join ( 
+                    select recipe_id, count(*) as available_ingredients 
+                    from recipe_ingredients  
+                    where ingredient_name in ({}) 
+                    group by recipe_id 
+                    ) s on r.recipe_id = s.recipe_id  
+                where s.available_ingredients = r.num_ingredients - 1
+            """.format(ingredient_list)
+        
+        almost_content = []
+        aq = Recipes.objects.raw(almost_query)
+        print(aq)
+        for a in aq:
+            print(a.recipe_id, a.recipe_name)
+            print("www.allrecipes.com/recipe/{}".format(a.recipe_id))
+            almost_recipes = {}
+            almost_recipes["recipe_name"] = a.recipe_name
+            almost_recipes["recipe_url"] = "http://www.allrecipes.com/recipe/{}".format(a.recipe_id)
+            response = requests.get(almost_recipes["recipe_url"])
+            soup = BeautifulSoup(response.text, "html.parser")
+            x = soup.find_all("img", class_= "rec-photo")
+            if x:
+                picture_url = re.findall(r'src="(.*?)"', str(x))[0]
+                almost_recipes["picture_url"] = picture_url
+            if not x:
+                almost_recipes["picture_url"] = "no picture"
+                
+            almost_content.append(almost_recipes)
+
+        json = {"recipes": content, "almost_recipes": almost_content}
+
 
 
         #print(x)
@@ -81,4 +128,4 @@ class InputIngredientsViewset(viewsets.ModelViewSet):
         ingredient_list = str(ingredient_list).strip('[]')
         x = 
         '''
-        return Response(content)
+        return Response(json)

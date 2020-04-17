@@ -36,3 +36,36 @@
     transform: rotate(360deg);
   }
 }
+
+.search {
+  display: flex;
+  text-align: center
+}
+
+.ingredient_submit {
+  flex: 19%;
+  text-align: left
+}
+
+.recipes_output {
+  flex: 45%;
+}
+
+.almost_recipes_output {
+  flex: 45%
+}
+
+ul {
+    list-style-type: none;
+    margin: 0 0 100px 0;
+}
+
+.photo {
+  height: 200px;
+  width: 300px;
+}
+
+li {
+  list-style-type: none;
+  margin: 0 0 40px 0;
+}
