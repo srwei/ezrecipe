@@ -56,13 +56,19 @@ class InputIngredientsViewset(viewsets.ModelViewSet):
         #    print(o.recipe_id)
 
         query = """
-                select * from recipes r 
+                select 
+                 r.recipe_id, 
+                 r.recipe_name,
+                 urls.recipe_url,
+                 urls.picture_url
+                 from recipes r 
                 join ( 
                     select recipe_id, count(*) as available_ingredients 
                     from recipe_ingredients  
                     where ingredient_name in ({}) 
                     group by recipe_id 
-                    ) s on r.recipe_id = s.recipe_id  
+                    ) s on r.recipe_id = s.recipe_id
+                join urls on urls.recipe_id = r.recipe_id  
                 where s.available_ingredients >= r.num_ingredients
             """.format(ingredient_list)
 
@@ -74,27 +80,26 @@ class InputIngredientsViewset(viewsets.ModelViewSet):
             print("www.allrecipes.com/recipe/{}".format(i.recipe_id))
             recipes = {}
             recipes["recipe_name"] = i.recipe_name
-            recipes["recipe_url"] = "http://www.allrecipes.com/recipe/{}".format(i.recipe_id)
-            response = requests.get(recipes["recipe_url"])
-            soup = BeautifulSoup(response.text, "html.parser")
-            x = soup.find_all("img", class_= "rec-photo")
-            if x:
-                picture_url = re.findall(r'src="(.*?)"', str(x))[0]
-                recipes["picture_url"] = picture_url
-            if not x:
-                recipes["picture_url"] = "no picture"
+            recipes["recipe_url"] = i.recipe_url
+            recipes["picture_url"] = i.picture_url
 
             content.append(recipes)
 
         #Getting Recipes that are almost available (missing one ingredient)
         almost_query = """
-                select * from recipes r 
+                select 
+                 r.recipe_id, 
+                 r.recipe_name,
+                 urls.recipe_url,
+                 urls.picture_url
+                 from recipes r 
                 join ( 
                     select recipe_id, count(*) as available_ingredients 
                     from recipe_ingredients  
                     where ingredient_name in ({}) 
                     group by recipe_id 
                     ) s on r.recipe_id = s.recipe_id  
+                join urls on urls.recipe_id = r.recipe_id  
                 where s.available_ingredients = r.num_ingredients - 1
             """.format(ingredient_list)
         
@@ -106,15 +111,8 @@ class InputIngredientsViewset(viewsets.ModelViewSet):
             print("www.allrecipes.com/recipe/{}".format(a.recipe_id))
             almost_recipes = {}
             almost_recipes["recipe_name"] = a.recipe_name
-            almost_recipes["recipe_url"] = "http://www.allrecipes.com/recipe/{}".format(a.recipe_id)
-            response = requests.get(almost_recipes["recipe_url"])
-            soup = BeautifulSoup(response.text, "html.parser")
-            x = soup.find_all("img", class_= "rec-photo")
-            if x:
-                picture_url = re.findall(r'src="(.*?)"', str(x))[0]
-                almost_recipes["picture_url"] = picture_url
-            if not x:
-                almost_recipes["picture_url"] = "no picture"
+            almost_recipes["recipe_url"] = a.recipe_url
+            almost_recipes["picture_url"] = a.picture_url
                 
             almost_content.append(almost_recipes)
 
