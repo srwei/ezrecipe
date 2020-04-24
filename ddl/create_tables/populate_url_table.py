@@ -29,6 +29,7 @@ try:
                     picture_url = "no picture"
                 entry = [recipe_id, recipe_url, picture_url]
                 cursor.execute("INSERT INTO urls VALUES (%s, %s, %s)", entry)
+                #write to csv file next time too just in case job fails before commit
                 print("Populated URLS for {}".format(row[1]))
             print("Successfully inserted into the ingredients table")
 

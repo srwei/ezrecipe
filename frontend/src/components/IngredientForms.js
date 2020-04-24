@@ -100,7 +100,7 @@ class IngredientForms extends Component {
                         </form>
                     </div>
                     <div className="recipes_output">
-                        <h4>Ready To Make Recipes</h4>
+                        <h4>READY TO MAKE RECIPES</h4>
                             <ul>  
                                 {this.state.recipes.map(r => 
                                 <li>
@@ -112,7 +112,7 @@ class IngredientForms extends Component {
                             </ul>
                     </div>
                     <div className="almost_recipes_output">
-                        <h4>Missing One Ingredient</h4>
+                        <h4>MISSING ONE INGREDIENT</h4>
                             <ul>  
                                 {this.state.almost_recipes.map(r => 
                                 <li>
